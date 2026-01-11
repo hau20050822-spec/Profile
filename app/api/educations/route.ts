@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { dbConnect } from "@/lib/dbConnect";
-import Education from "@/model/Educations";
+import Education from "@/model/Education";
 
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*", 
@@ -16,19 +16,18 @@ export async function OPTIONS() {
 }
 
 export async function GET() {
-    dbConnect();
+    await dbConnect();
     try {
-        const educations = await Education.find({}).sort({createdAt: -1});
+        const educations = await Education.find({}).populate('user_id', 'fullname email');
         return new NextResponse(JSON.stringify(educations), {
             status: 200,
             headers: {
                 ...CORS_HEADERS,
                 "Content-Type": "application/json",
             }
-        })
-
-    }catch(error: any) {
-         return new NextResponse(JSON.stringify({err: error.message}), {
+        });
+    } catch (error: any) {
+        return new NextResponse(JSON.stringify({err: error.message}), {
             status: 500,
             headers: {
                 ...CORS_HEADERS,
@@ -41,30 +40,25 @@ export async function GET() {
 export async function POST(req: Request) {
     await dbConnect();
     const body = await req.json();
-    const {user_id, school_name, start_year, end_year, description } = body;
+    
     try {
-        const education = await Education.create({
-            user_id: user_id, 
-            school_name: school_name, 
-            start_year: start_year, 
-            end_year: end_year,
-            description: description
-        })
+        const education = new Education(body);
+        await education.save();
+        
         return new NextResponse(JSON.stringify(education), {
-            status: 200,
+            status: 201,
             headers: {
                 ...CORS_HEADERS,
                 "Content-Type": "application/json",
             }
-        })
-
-    }catch(error: any) {
-          return new NextResponse(JSON.stringify({err: error.message}), {
+        });
+    } catch (error: any) {
+        return new NextResponse(JSON.stringify({err: error.message}), {
             status: 500,
             headers: {
                 ...CORS_HEADERS,
                 "Content-Type": "application/json",
             }
-        })
+        });
     }
 }

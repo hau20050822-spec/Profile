@@ -24,7 +24,7 @@ export default function Header() {
                         <Link href="/about" className="text-base font-medium text-gray-700 hover:text-blue-600 transition-colors no-underline">
                             Giới thiệu
                         </Link>
-                        <Link href="/education" className="text-base font-medium text-gray-700 hover:text-blue-600 transition-colors no-underline">
+                        <Link href={'/education'} className="text-base font-medium text-gray-700 hover:text-blue-600 transition-colors no-underline">
                             Học vấn
                         </Link>
                         <Link href="/contact" className="text-base font-medium text-gray-700 hover:text-blue-600 transition-colors no-underline">
