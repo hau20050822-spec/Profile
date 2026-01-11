@@ -15,9 +15,9 @@ export async function OPTIONS() {
   });
 }
 
-export async function PUT(req: Request, params: { params: Promise<{ id: string }> }) {
+export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
     await dbConnect();
-    const id  = await params;
+    const { id } = await params;
     const body = await req.json();
     try {
         const { ...updateBody } = body;
@@ -45,10 +45,10 @@ export async function PUT(req: Request, params: { params: Promise<{ id: string }
     }
 }
 
-export async function DELETE(req: Request, params: { params: Promise<{ id: string }> }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
     await dbConnect();
+    const { id } = await params;
     try {
-        const id = await params;
         const deletingUser = await User.findByIdAndDelete(id);
         return new NextResponse(JSON.stringify(deletingUser),{
             status: 200,
